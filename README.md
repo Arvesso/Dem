@@ -12,3 +12,11 @@ python gruzovozoff/app.py
 ```
 
 После запуска приложение будет доступно на `http://localhost:5000`.
+
+## Запуск PHP версии
+
+```
+php -S localhost:8000 -t php_version
+```
+
+После запуска PHP версия будет доступна на `http://localhost:8000`.
