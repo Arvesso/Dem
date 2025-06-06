@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Регистрация</h2>
+<form method="post">
+    <p>Логин: <input name="username" required></p>
+    <p>Пароль: <input type="password" name="password" required></p>
+    <p>ФИО: <input name="full_name" required></p>
+    <p>Телефон: <input name="phone" placeholder="+7(999)-999-99-99" required></p>
+    <p>Email: <input name="email" type="email" required></p>
+    <p><button type="submit">Зарегистрироваться</button></p>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+</form>
+{% endblock %}

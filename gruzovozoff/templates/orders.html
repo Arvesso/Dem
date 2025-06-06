@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Мои заявки</h2>
+{% if orders %}
+<table border="1" cellpadding="5">
+<tr><th>ID</th><th>Дата</th><th>Вес</th><th>Габариты</th><th>Тип</th><th>Откуда</th><th>Куда</th></tr>
+{% for o in orders %}
+<tr>
+<td>{{ o.id }}</td><td>{{ o.datetime }}</td><td>{{ o.weight }}</td><td>{{ o.size }}</td><td>{{ o.cargo_type }}</td><td>{{ o.from_addr }}</td><td>{{ o.to_addr }}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}<p>Заявок нет</p>{% endif %}
+{% endblock %}
