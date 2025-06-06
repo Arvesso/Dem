@@ -26,6 +26,8 @@ class Order(db.Model):
     cargo_type = db.Column(db.String(100))
     from_addr = db.Column(db.String(200))
     to_addr = db.Column(db.String(200))
+    status = db.Column(db.String(20), default='Новая')
+    review = db.Column(db.Text)
 
 # Helpers
 USER_RE = re.compile(r'^[\u0400-\u04FF]{6,}$')
@@ -103,6 +105,17 @@ def orders():
     user_orders = Order.query.filter_by(user_id=user.id).all()
     return render_template('orders.html', orders=user_orders)
 
+
+@app.route('/orders/<int:order_id>/review', methods=['POST'])
+def add_review(order_id):
+    if not logged_in():
+        return redirect(url_for('login'))
+    order = Order.query.get(order_id)
+    if order and order.user_id == session['user_id'] and order.status == 'Выполнено':
+        order.review = request.form['review']
+        db.session.commit()
+    return redirect(url_for('orders'))
+
 @app.route('/create', methods=['GET', 'POST'])
 def create():
     if not logged_in():
@@ -115,7 +128,8 @@ def create():
             size=request.form['size'],
             cargo_type=request.form['cargo_type'],
             from_addr=request.form['from_addr'],
-            to_addr=request.form['to_addr'])
+            to_addr=request.form['to_addr'],
+            status='Новая')
         db.session.add(order)
         db.session.commit()
         return redirect(url_for('orders'))
@@ -132,8 +146,12 @@ def admin_panel():
             return render_template('admin_login.html', error='Неверные данные')
     if not session.get('admin'):
         return render_template('admin_login.html')
-    all_orders = Order.query.all()
-    return render_template('admin.html', orders=all_orders)
+    status_filter = request.args.get('status')
+    if status_filter:
+        all_orders = Order.query.filter_by(status=status_filter).all()
+    else:
+        all_orders = Order.query.all()
+    return render_template('admin.html', orders=all_orders, status_filter=status_filter)
 
 @app.route('/admin/delete/<int:order_id>', methods=['POST'])
 def delete_order(order_id):
@@ -142,6 +160,17 @@ def delete_order(order_id):
     order = Order.query.get(order_id)
     if order:
         db.session.delete(order)
+        db.session.commit()
+    return redirect(url_for('admin_panel'))
+
+
+@app.route('/admin/update/<int:order_id>', methods=['POST'])
+def update_status(order_id):
+    if not session.get('admin'):
+        return redirect(url_for('admin_panel'))
+    order = Order.query.get(order_id)
+    if order:
+        order.status = request.form['status']
         db.session.commit()
     return redirect(url_for('admin_panel'))
 
