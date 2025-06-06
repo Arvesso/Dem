@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Все заявки</h2>
+{% if orders %}
+<table border="1" cellpadding="5">
+<tr><th>ID</th><th>Пользователь</th><th>Дата</th><th>Вес</th><th>Габариты</th><th>Тип</th><th>Откуда</th><th>Куда</th><th></th></tr>
+{% for o in orders %}
+<tr>
+<td>{{ o.id }}</td><td>{{ o.user_id }}</td><td>{{ o.datetime }}</td><td>{{ o.weight }}</td><td>{{ o.size }}</td><td>{{ o.cargo_type }}</td><td>{{ o.from_addr }}</td><td>{{ o.to_addr }}</td>
+<td><form method="post" action="{{ url_for('delete_order', order_id=o.id) }}" style="display:inline"><button type="submit">Удалить</button></form></td>
+</tr>
+{% endfor %}
+</table>
+{% else %}<p>Заявок нет</p>{% endif %}
+{% endblock %}
