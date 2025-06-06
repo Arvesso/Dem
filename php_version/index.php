@@ -21,8 +21,21 @@ $db->exec("CREATE TABLE IF NOT EXISTS orders (
     size TEXT,
     cargo_type TEXT,
     from_addr TEXT,
-    to_addr TEXT
+    to_addr TEXT,
+    status TEXT DEFAULT 'Новая',
+    review TEXT
 )");
+
+// add new columns if database already existed
+$cols = [];
+$res = $db->query("PRAGMA table_info(orders)");
+foreach ($res as $row) { $cols[] = $row['name']; }
+if (!in_array('status', $cols)) {
+    $db->exec("ALTER TABLE orders ADD COLUMN status TEXT DEFAULT 'Новая'");
+}
+if (!in_array('review', $cols)) {
+    $db->exec("ALTER TABLE orders ADD COLUMN review TEXT");
+}
 
 function render($template, $vars = []) {
     extract($vars);
@@ -59,7 +72,7 @@ switch ($action) {
     case 'create':
         if (!logged_in()) { header('Location: ?action=login'); exit; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $stmt = $db->prepare('INSERT INTO orders (user_id, datetime, weight, size, cargo_type, from_addr, to_addr) VALUES (?,?,?,?,?,?,?)');
+            $stmt = $db->prepare('INSERT INTO orders (user_id, datetime, weight, size, cargo_type, from_addr, to_addr, status) VALUES (?,?,?,?,?,?,?,?)');
             $stmt->execute([
                 $_SESSION['user_id'],
                 $_POST['datetime'],
@@ -67,15 +80,35 @@ switch ($action) {
                 $_POST['size'],
                 $_POST['cargo_type'],
                 $_POST['from_addr'],
-                $_POST['to_addr']
+                $_POST['to_addr'],
+                'Новая'
             ]);
             header('Location: ?action=orders');
             exit;
         }
         render('create');
         break;
+    case 'review':
+        if (!logged_in()) { header('Location: ?action=login'); exit; }
+        $id = (int)($_GET['id'] ?? 0);
+        $stmt = $db->prepare('SELECT * FROM orders WHERE id = ?');
+        $stmt->execute([$id]);
+        $order = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($order && $order['user_id'] == $_SESSION['user_id'] && $order['status'] === 'Выполнено') {
+            $stmt = $db->prepare('UPDATE orders SET review = ? WHERE id = ?');
+            $stmt->execute([$_POST['review'], $id]);
+        }
+        header('Location: ?action=orders');
+        break;
     case 'admin':
         handle_admin($db);
+        break;
+    case 'update':
+        if (!($_SESSION['admin'] ?? false)) { header('Location: ?action=admin'); exit; }
+        $id = (int)($_GET['id'] ?? 0);
+        $stmt = $db->prepare('UPDATE orders SET status = ? WHERE id = ?');
+        $stmt->execute([$_POST['status'], $id]);
+        header('Location: ?action=admin');
         break;
     case 'delete':
         if (!($_SESSION['admin'] ?? false)) { header('Location: ?action=admin'); exit; }
@@ -165,7 +198,14 @@ function handle_admin($db) {
         render('admin_login');
         return;
     }
-    $orders = $db->query('SELECT * FROM orders')->fetchAll(PDO::FETCH_ASSOC);
-    render('admin', ['orders' => $orders]);
+    $status_filter = $_GET['status'] ?? null;
+    if ($status_filter) {
+        $stmt = $db->prepare('SELECT * FROM orders WHERE status = ?');
+        $stmt->execute([$status_filter]);
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $orders = $db->query('SELECT * FROM orders')->fetchAll(PDO::FETCH_ASSOC);
+    }
+    render('admin', ['orders' => $orders, 'status_filter' => $status_filter]);
 }
 ?>

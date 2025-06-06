@@ -3,10 +3,29 @@
 <h2>Мои заявки</h2>
 {% if orders %}
 <table>
-<tr><th>ID</th><th>Дата</th><th>Вес</th><th>Габариты</th><th>Тип</th><th>Откуда</th><th>Куда</th></tr>
+<tr>
+<th>ID</th><th>Дата</th><th>Вес</th><th>Габариты</th><th>Тип</th><th>Откуда</th><th>Куда</th><th>Статус</th><th>Отзыв</th>
+</tr>
 {% for o in orders %}
 <tr>
-<td>{{ o.id }}</td><td>{{ o.datetime }}</td><td>{{ o.weight }}</td><td>{{ o.size }}</td><td>{{ o.cargo_type }}</td><td>{{ o.from_addr }}</td><td>{{ o.to_addr }}</td>
+<td>{{ o.id }}</td>
+<td>{{ o.datetime }}</td>
+<td>{{ o.weight }}</td>
+<td>{{ o.size }}</td>
+<td>{{ o.cargo_type }}</td>
+<td>{{ o.from_addr }}</td>
+<td>{{ o.to_addr }}</td>
+<td>{{ o.status }}</td>
+<td>
+    {% if o.status == 'Выполнено' and not o.review %}
+        <form method="post" action="{{ url_for('add_review', order_id=o.id) }}">
+            <input type="text" name="review" required>
+            <button type="submit">Оставить отзыв</button>
+        </form>
+    {% else %}
+        {{ o.review or '' }}
+    {% endif %}
+</td>
 </tr>
 {% endfor %}
 </table>
