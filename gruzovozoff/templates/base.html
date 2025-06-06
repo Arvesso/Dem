@@ -3,11 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Грузовозофф</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        nav a { margin-right: 10px; }
-        .error { color: red; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 <nav>
@@ -21,6 +17,7 @@
     {% endif %}
     <a href="{{ url_for('admin_panel') }}">Админ</a>
 </nav>
+<div class="container">
 <hr>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -31,5 +28,7 @@
 {% endwith %}
 
 {% block content %}{% endblock %}
+</div>
+<script src="{{ url_for('static', filename='js/form.js') }}"></script>
 </body>
 </html>
