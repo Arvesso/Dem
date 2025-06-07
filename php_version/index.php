@@ -1,37 +1,38 @@
 <?php
 session_start();
 
-$db = new PDO('sqlite:' . __DIR__ . '/../gruzovozoff/gruzovozoff.db');
+$config = require __DIR__ . '/db_config.php';
+$db = new PDO($config['dsn'], $config['user'], $config['password']);
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Initialize tables
 $db->exec("CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password_hash TEXT,
-    full_name TEXT,
-    phone TEXT,
-    email TEXT
-)");
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) UNIQUE,
+    password_hash VARCHAR(255),
+    full_name VARCHAR(255),
+    phone VARCHAR(255),
+    email VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 $db->exec("CREATE TABLE IF NOT EXISTS orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    datetime TEXT,
-    weight TEXT,
-    size TEXT,
-    cargo_type TEXT,
-    from_addr TEXT,
-    to_addr TEXT,
-    status TEXT DEFAULT 'Новая',
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    datetime DATETIME,
+    weight VARCHAR(255),
+    size VARCHAR(255),
+    cargo_type VARCHAR(255),
+    from_addr VARCHAR(255),
+    to_addr VARCHAR(255),
+    status VARCHAR(255) DEFAULT 'Новая',
     review TEXT
-)");
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
 // add new columns if database already existed
 $cols = [];
-$res = $db->query("PRAGMA table_info(orders)");
-foreach ($res as $row) { $cols[] = $row['name']; }
+$res = $db->query("SHOW COLUMNS FROM orders");
+foreach ($res as $row) { $cols[] = $row['Field']; }
 if (!in_array('status', $cols)) {
-    $db->exec("ALTER TABLE orders ADD COLUMN status TEXT DEFAULT 'Новая'");
+    $db->exec("ALTER TABLE orders ADD COLUMN status VARCHAR(255) DEFAULT 'Новая'");
 }
 if (!in_array('review', $cols)) {
     $db->exec("ALTER TABLE orders ADD COLUMN review TEXT");
