@@ -19,4 +19,7 @@ python gruzovozoff/app.py
 php -S localhost:8000 -t php_version
 ```
 
+Файл `php_version/db_config.php` содержит параметры подключения к MySQL. Перед
+запуском создайте базу данных и при необходимости измените логин/пароль.
+
 После запуска PHP версия будет доступна на `http://localhost:8000`.
