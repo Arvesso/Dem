@@ -2,7 +2,11 @@
 <form method="post" action="?action=create">
     <p>Дата и время: <input name="datetime" type="datetime-local" required></p>
     <p>Вес (кг): <input name="weight" type="number" min="0" step="0.01" required></p>
-    <p>Габариты: <input name="size" required></p>
+    <p>Габариты (Д×Ш×В, см):
+        <input name="length" type="number" min="0" step="0.01" required placeholder="Длина">
+        <input name="width" type="number" min="0" step="0.01" required placeholder="Ширина">
+        <input name="height" type="number" min="0" step="0.01" required placeholder="Высота">
+    </p>
     <p>Тип груза:
         <select name="cargo_type" id="cargo_type">
             <option value="Хрупкое">Хрупкое</option>
