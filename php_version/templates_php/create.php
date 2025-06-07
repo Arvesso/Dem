@@ -1,5 +1,5 @@
-<h2>Новая заявка</h2>
-<form method="post" action="?action=create">
+<h2 class="fade">Новая заявка</h2>
+<form method="post" action="?action=create" class="fade">
     <p>Дата и время: <input name="datetime" type="datetime-local" required></p>
     <p>Вес (кг): <input name="weight" type="number" min="0" step="0.01" required></p>
     <p>Габариты (Д×Ш×В, см):

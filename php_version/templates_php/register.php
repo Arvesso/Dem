@@ -1,5 +1,5 @@
-<h2>Регистрация</h2>
-<form method="post" action="?action=register">
+<h2 class="fade">Регистрация</h2>
+<form method="post" action="?action=register" class="fade">
     <p>Логин: <input name="username" required pattern="[А-Яа-яЁё]{6,}"></p>
     <p>Пароль: <input type="password" name="password" required minlength="6"></p>
     <p>ФИО: <input name="full_name" required pattern="[А-Яа-яЁё ]+"></p>

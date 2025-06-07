@@ -1,6 +1,7 @@
 <h2>Мои заявки</h2>
+<div id="orders-dynamic">
 <?php if ($orders): ?>
-<table>
+<table class="fade">
 <tr><th>ID</th><th>Дата</th><th>Вес</th><th>Габариты</th><th>Тип</th><th>Откуда</th><th>Куда</th><th>Статус</th><th>Отзыв</th></tr>
 <?php foreach ($orders as $o): ?>
 <tr>
@@ -26,5 +27,6 @@
 <?php endforeach; ?>
 </table>
 <?php else: ?>
-<p>Заявок нет</p>
+<p class="fade">Заявок нет</p>
 <?php endif; ?>
+</div>
