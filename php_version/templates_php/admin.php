@@ -1,5 +1,5 @@
-<h2>Все заявки</h2>
-<form method="get" action="index.php">
+<h2 class="fade">Все заявки</h2>
+<form method="get" action="index.php" class="fade">
     <input type="hidden" name="action" value="admin">
     <label>Статус:
         <select name="status">
@@ -13,7 +13,7 @@
     <button type="submit">Фильтр</button>
 </form>
 <?php if ($orders): ?>
-<table>
+<table class="fade">
 <tr><th>ID</th><th>Пользователь</th><th>Дата</th><th>Вес</th><th>Габариты</th><th>Тип</th><th>Откуда</th><th>Куда</th><th>Статус</th><th>Действия</th></tr>
 <?php foreach ($orders as $o): ?>
 <tr>
@@ -44,5 +44,5 @@
 <?php endforeach; ?>
 </table>
 <?php else: ?>
-<p>Заявок нет</p>
+<p class="fade">Заявок нет</p>
 <?php endif; ?>
