@@ -1,17 +1,47 @@
+:root {
+  --bg-color: #f7f7f7;
+  --container-bg: #fff;
+  --nav-bg: #2d6a4f;
+  --nav-text: #fff;
+  --text-color: #333;
+  --accent: #2d6a4f;
+  --accent-hover: #1b4332;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   margin: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+  --bg-color: #202124;
+  --container-bg: #303134;
+  --nav-bg: #111;
+  --nav-text: #ddd;
+  --text-color: #eee;
+  --accent: #5e8c61;
+  --accent-hover: #6bbf73;
 }
 
 nav {
-  background-color: #2d6a4f;
+  background-color: var(--nav-bg);
   padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+nav .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 nav a {
-  color: #fff;
-  margin-right: 15px;
+  color: var(--nav-text);
   text-decoration: none;
   font-weight: bold;
 }
@@ -20,13 +50,35 @@ nav a:hover {
   text-decoration: underline;
 }
 
+#theme-toggle {
+  background: none;
+  border: none;
+  color: var(--nav-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+#theme-toggle:hover {
+  color: #ffeb3b;
+}
+
 .container {
   max-width: 800px;
   margin: 30px auto;
-  background: #fff;
+  background: var(--container-bg);
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: background-color 0.3s;
+}
+
+input, select {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 table {
@@ -41,16 +93,17 @@ table th, table td {
 }
 
 button {
-  background: #2d6a4f;
+  background: var(--accent);
   color: #fff;
   border: none;
   padding: 6px 12px;
   cursor: pointer;
   border-radius: 4px;
+  transition: background 0.3s;
 }
 
 button:hover {
-  background: #1b4332;
+  background: var(--accent-hover);
 }
 
 .error {
@@ -60,4 +113,18 @@ button:hover {
 
 form p {
   margin: 10px 0;
+}
+
+@media (max-width: 600px) {
+  nav .links {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .container {
+    margin: 15px;
+    padding: 15px;
+  }
+  table th, table td {
+    font-size: 14px;
+  }
 }
