@@ -22,7 +22,6 @@
             <a href="?action=login">Вход</a>
             <a href="?action=register">Регистрация</a>
         <?php endif; ?>
-        <a href="?action=admin">Админ</a>
     </div>
     <button id="theme-toggle" title="Сменить тему">🌙</button>
 </nav>

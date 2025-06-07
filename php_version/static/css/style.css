@@ -80,6 +80,7 @@ nav a:hover::after {
 #theme-toggle {
   background: none;
   border: none;
+  margin: 0;
   color: var(--nav-text);
   font-size: 1.2rem;
   cursor: pointer;
@@ -137,6 +138,7 @@ button {
   color: #fff;
   border: none;
   padding: 10px 20px;
+  margin: 16px 0 16px;
   cursor: pointer;
   border-radius: var(--radius);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -167,6 +169,7 @@ button:hover {
 form p {
   margin: 10px 0;
 }
+
 
 .order-list {
   display: flex;

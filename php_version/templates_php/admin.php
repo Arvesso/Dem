@@ -34,9 +34,7 @@
               <option value="Отменена" <?= $o['status']=='Отменена'?'selected':'' ?>>Отменена</option>
           </select>
           <button type="submit">Обновить</button>
-      </form>
-      <form method="post" action="?action=delete&id=<?= $o['id'] ?>" style="display:inline">
-          <button type="submit">Удалить</button>
+          <button type="submit" name="delete" formaction="?action=delete&id=<?= $o['id'] ?>" formmethod="post">Удалить</button>
       </form>
   </div>
 </div>
