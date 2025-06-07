@@ -17,7 +17,7 @@
 <?php foreach ($orders as $o): ?>
 <tr>
 <td><?= htmlspecialchars($o['id']) ?></td>
-<td><?= htmlspecialchars($o['user_id']) ?></td>
+<td><?= htmlspecialchars($o['full_name'] ?? $o['user_id']) ?></td>
 <td><?= htmlspecialchars($o['datetime']) ?></td>
 <td><?= htmlspecialchars($o['weight']) ?></td>
 <td><?= htmlspecialchars($o['size']) ?></td>

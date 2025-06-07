@@ -72,12 +72,13 @@ switch ($action) {
     case 'create':
         if (!logged_in()) { header('Location: ?action=login'); exit; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $size = $_POST['length'] . 'x' . $_POST['width'] . 'x' . $_POST['height'];
             $stmt = $db->prepare('INSERT INTO orders (user_id, datetime, weight, size, cargo_type, from_addr, to_addr, status) VALUES (?,?,?,?,?,?,?,?)');
             $stmt->execute([
                 $_SESSION['user_id'],
                 $_POST['datetime'],
                 $_POST['weight'],
-                $_POST['size'],
+                $size,
                 $_POST['cargo_type'],
                 $_POST['from_addr'],
                 $_POST['to_addr'],
@@ -168,6 +169,13 @@ function handle_login($db) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $_POST['username'];
         $password = $_POST['password'];
+
+        if ($username === 'admin' && $password === 'gruzovik2024') {
+            $_SESSION['admin'] = true;
+            header('Location: ?action=admin');
+            exit;
+        }
+
         $stmt = $db->prepare('SELECT * FROM users WHERE username = ?');
         $stmt->execute([$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -184,27 +192,17 @@ function handle_login($db) {
 }
 
 function handle_admin($db) {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !($_SESSION['admin'] ?? false)) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        if ($username === 'admin' && $password === 'gruzovik2024') {
-            $_SESSION['admin'] = true;
-        } else {
-            render('admin_login', ['error' => 'Неверные данные']);
-            return;
-        }
-    }
     if (!($_SESSION['admin'] ?? false)) {
-        render('admin_login');
+        header('Location: ?action=login');
         return;
     }
     $status_filter = $_GET['status'] ?? null;
     if ($status_filter) {
-        $stmt = $db->prepare('SELECT * FROM orders WHERE status = ?');
+        $stmt = $db->prepare('SELECT orders.*, users.full_name FROM orders LEFT JOIN users ON orders.user_id = users.id WHERE status = ?');
         $stmt->execute([$status_filter]);
         $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } else {
-        $orders = $db->query('SELECT * FROM orders')->fetchAll(PDO::FETCH_ASSOC);
+        $orders = $db->query('SELECT orders.*, users.full_name FROM orders LEFT JOIN users ON orders.user_id = users.id')->fetchAll(PDO::FETCH_ASSOC);
     }
     render('admin', ['orders' => $orders, 'status_filter' => $status_filter]);
 }

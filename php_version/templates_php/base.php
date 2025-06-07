@@ -7,9 +7,11 @@
 </head>
 <body>
 <nav>
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <a href="?action=orders">Мои заявки</a>
-        <a href="?action=create">Новая заявка</a>
+    <?php if (isset($_SESSION['user_id']) || ($_SESSION['admin'] ?? false)): ?>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="?action=orders">Мои заявки</a>
+            <a href="?action=create">Новая заявка</a>
+        <?php endif; ?>
         <a href="?action=logout">Выход</a>
     <?php else: ?>
         <a href="?action=login">Вход</a>
