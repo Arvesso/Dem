@@ -3,16 +3,26 @@ window.addEventListener('DOMContentLoaded', function() {
   const phone = document.querySelector('input[name="phone"]');
   if (phone) {
     phone.addEventListener('input', function() {
-      let digits = phone.value.replace(/\D/g, '').substring(0, 10);
-      let formatted = '+7(' + digits.slice(0,3);
+      let digits = phone.value.replace(/\D/g, '');
+
+      // remove country code if already present
+      if (digits.startsWith('7')) {
+        digits = digits.slice(1);
+      }
+      digits = digits.substring(0, 10);
+
+      let formatted = '+7(' + digits.slice(0, 3);
+      if (digits.length >= 3) {
+        formatted += ')';
+      }
       if (digits.length > 3) {
-        formatted += ')-' + digits.slice(3,6);
+        formatted += '-' + digits.slice(3, 6);
       }
       if (digits.length > 6) {
-        formatted += '-' + digits.slice(6,8);
+        formatted += '-' + digits.slice(6, 8);
       }
       if (digits.length > 8) {
-        formatted += '-' + digits.slice(8,10);
+        formatted += '-' + digits.slice(8, 10);
       }
       phone.value = formatted;
     });

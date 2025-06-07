@@ -1,5 +1,6 @@
 <h2>Все заявки</h2>
-<form method="get" action="?action=admin">
+<form method="get" action="index.php">
+    <input type="hidden" name="action" value="admin">
     <label>Статус:
         <select name="status">
             <option value="" <?php if (!$status_filter) echo 'selected'; ?>>Все</option>
