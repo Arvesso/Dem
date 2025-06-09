@@ -1,19 +1,16 @@
 <h2>Мои заявки</h2>
-<div id="orders-dynamic">
-<?php if ($orders): ?>
+<div id="applications-dynamic">
+<?php if ($applications): ?>
 <div class="order-list fade">
-<?php foreach ($orders as $o): ?>
+<?php foreach ($applications as $o): ?>
 <div class="order-card">
   <div><strong>ID:</strong> <?= htmlspecialchars($o['id']) ?></div>
-  <div><strong>Дата:</strong> <?= htmlspecialchars($o['datetime']) ?></div>
-  <div><strong>Вес:</strong> <?= htmlspecialchars($o['weight']) ?></div>
-  <div><strong>Габариты:</strong> <?= htmlspecialchars($o['size']) ?></div>
-  <div><strong>Тип:</strong> <?= htmlspecialchars($o['cargo_type']) ?></div>
-  <div><strong>Откуда:</strong> <?= htmlspecialchars($o['from_addr']) ?></div>
-  <div><strong>Куда:</strong> <?= htmlspecialchars($o['to_addr']) ?></div>
+  <div><strong>Курс:</strong> <?= htmlspecialchars($o['course']) ?></div>
+  <div><strong>Дата начала:</strong> <?= htmlspecialchars($o['start_date']) ?></div>
+  <div><strong>Оплата:</strong> <?= htmlspecialchars($o['payment']) ?></div>
   <div><strong>Статус:</strong> <?= htmlspecialchars($o['status']) ?></div>
   <div><strong>Отзыв:</strong>
-    <?php if ($o['status'] === 'Выполнено' && empty($o['review'])): ?>
+    <?php if ($o['status'] === 'Обучение завершено' && empty($o['review'])): ?>
     <form method="post" action="?action=review&id=<?= $o['id'] ?>">
         <input type="text" name="review" required>
         <button type="submit">Оставить отзыв</button>
