@@ -25,6 +25,7 @@ if ($orders) {
         $license_issue = htmlspecialchars($o['license_issue']);
         $car_make = htmlspecialchars($o['car_make']);
         $car_model = htmlspecialchars($o['car_model']);
+        $payment = htmlspecialchars($o['payment_type']);
         $status = htmlspecialchars($o['status']);
         $reason = htmlspecialchars($o['rejection_reason'] ?? '');
 
@@ -38,6 +39,7 @@ if ($orders) {
         echo "<div><strong>Дата выдачи водительского удостоверения:</strong> $license_issue</div>";
         echo "<div><strong>Марка:</strong> $car_make</div>";
         echo "<div><strong>Модель:</strong> $car_model</div>";
+        echo "<div><strong>Оплата:</strong> $payment</div>";
         echo "<div><strong>Статус:</strong> $status</div>";
         if ($o['status'] === 'Отклонено' && $reason !== '') {
             echo "<div><strong>Причина отказа:</strong> $reason</div>";

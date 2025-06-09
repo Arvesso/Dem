@@ -29,6 +29,7 @@
         <div><strong>Контакты:</strong> <?= htmlspecialchars($o['contact']) ?></div>
         <div><strong>ВУ:</strong> <?= htmlspecialchars($o['license_series'] . ' ' . $o['license_number'] . ' от ' . $o['license_issue']) ?></div>
         <div><strong>Автомобиль:</strong> <?= htmlspecialchars($o['car_make'] . ' ' . $o['car_model']) ?></div>
+        <div><strong>Оплата:</strong> <?= htmlspecialchars($o['payment_type']) ?></div>
         <div><strong>Статус:</strong> <?= htmlspecialchars($o['status']) ?></div>
         <div class="actions">
         <form method="post" action="?action=update&id=<?= $o['id'] ?>" style="display:inline">

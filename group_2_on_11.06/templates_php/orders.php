@@ -13,6 +13,7 @@
   <div><strong>Дата выдачи водительского удостоверения:</strong> <?= htmlspecialchars($o['license_issue']) ?></div>
   <div><strong>Марка:</strong> <?= htmlspecialchars($o['car_make']) ?></div>
   <div><strong>Модель:</strong> <?= htmlspecialchars($o['car_model']) ?></div>
+  <div><strong>Оплата:</strong> <?= htmlspecialchars($o['payment_type']) ?></div>
   <div><strong>Статус:</strong> <?= htmlspecialchars($o['status']) ?></div>
   <?php if ($o['status'] === 'Отклонено'): ?>
   <div><strong>Причина отказа: <?= htmlspecialchars($o['rejection_reason']) ?> </strong>

@@ -25,6 +25,7 @@ $db->exec("CREATE TABLE IF NOT EXISTS orders (
     license_issue VARCHAR(255),
     car_make VARCHAR(255),
     car_model VARCHAR(255),
+    payment_type VARCHAR(255),
     status VARCHAR(255) DEFAULT 'Новая',
     rejection_reason TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
@@ -38,6 +39,9 @@ if (!in_array('status', $cols)) {
 }
 if (!in_array('rejection_reason', $cols)) {
     $db->exec("ALTER TABLE orders ADD COLUMN rejection_reason TEXT");
+}
+if (!in_array('payment_type', $cols)) {
+    $db->exec("ALTER TABLE orders ADD COLUMN payment_type VARCHAR(255)");
 }
 
 function render($template, $vars = []) {
@@ -78,8 +82,8 @@ case 'create':
         $stmt = $db->prepare('INSERT INTO orders (
             user_id, datetime, address, contact,
             license_series, license_number, license_issue,
-            car_make, car_model, status
-        ) VALUES (?,?,?,?,?,?,?,?,?,?)');
+            car_make, car_model, payment_type, status
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
         $stmt->execute([
             $_SESSION['user_id'],
             $_POST['datetime'],
@@ -90,6 +94,7 @@ case 'create':
             $_POST['license_issue'],
             $_POST['car_make'],
             $_POST['car_model'],
+            $_POST['payment_type'],
             'Новая'
         ]);
         header('Location: ?action=orders');

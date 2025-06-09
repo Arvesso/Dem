@@ -110,6 +110,7 @@ nav a:hover::after {
 
 input, select {
   padding: 10px;
+  margin-bottom: 10px;
   border-radius: var(--radius);
   border: none;
   background: rgba(255, 255, 255, 0.6);
@@ -199,6 +200,10 @@ form p {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.confirm-label {
+  text-align: center;
 }
 
 @media (max-width: 600px) {

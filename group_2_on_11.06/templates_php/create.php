@@ -33,7 +33,21 @@
         </select>
     </p>
 
-    <p><button type="submit">Отправить</button></p>
+    <p>Тип оплаты:
+        <select name="payment_type" required>
+            <option value="Наличные">Наличные</option>
+            <option value="Банковская карта">Банковская карта</option>
+        </select>
+    </p>
+
+    <p>
+        <div style="display: flex; flex-direction: row; gap: 10px;">
+            <span>Я ознакомлен с правилами предоставления услуги</span>
+            <input type="checkbox" style="width: auto;" id="confirm"/>
+        </div>
+    </p>
+
+    <p><button type="submit" id="submit-btn" disabled>Отправить</button></p>
 </form>
 <script>
 const models = {
@@ -55,4 +69,12 @@ document.getElementById('car_make').addEventListener('change', function () {
         });
     }
 });
+
+const confirmCb = document.getElementById('confirm');
+const submitBtn = document.getElementById('submit-btn');
+if (confirmCb && submitBtn) {
+    confirmCb.addEventListener('change', function() {
+        submitBtn.disabled = !this.checked;
+    });
+}
 </script>
