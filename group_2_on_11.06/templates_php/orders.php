@@ -14,6 +14,12 @@
   <div><strong>Марка:</strong> <?= htmlspecialchars($o['car_make']) ?></div>
   <div><strong>Модель:</strong> <?= htmlspecialchars($o['car_model']) ?></div>
   <div><strong>Статус:</strong> <?= htmlspecialchars($o['status']) ?></div>
+  <?php if ($o['status'] === 'Отклонено'): ?>
+  <div><strong>Причина отказа: <?= htmlspecialchars($o['rejection_reason']) ?> </strong>
+  
+  </div>
+<?php endif; ?>
+
   </div>
 </div>
 <?php endforeach; ?>

@@ -26,6 +26,7 @@ if ($orders) {
         $car_make = htmlspecialchars($o['car_make']);
         $car_model = htmlspecialchars($o['car_model']);
         $status = htmlspecialchars($o['status']);
+        $reason = htmlspecialchars($o['rejection_reason'] ?? '');
 
         echo "<div class='order-card'>";
         echo "<div><strong>ID:</strong> $id</div>";
@@ -38,6 +39,9 @@ if ($orders) {
         echo "<div><strong>Марка:</strong> $car_make</div>";
         echo "<div><strong>Модель:</strong> $car_model</div>";
         echo "<div><strong>Статус:</strong> $status</div>";
+        if ($o['status'] === 'Отклонено' && $reason !== '') {
+            echo "<div><strong>Причина отказа:</strong> $reason</div>";
+    }
         echo "</div>";
     }
     echo "</div>";

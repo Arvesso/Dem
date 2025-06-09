@@ -31,18 +31,45 @@
         <div><strong>Автомобиль:</strong> <?= htmlspecialchars($o['car_make'] . ' ' . $o['car_model']) ?></div>
         <div><strong>Статус:</strong> <?= htmlspecialchars($o['status']) ?></div>
         <div class="actions">
-            <form method="post" action="?action=update&id=<?= $o['id'] ?>" style="display:inline">
-                <select name="status">
-                    <option value="Одобрено" <?= $o['status'] == 'Одобрено' ? 'selected' : '' ?>>Одобрено</option>
-                    <option value="Выполнено" <?= $o['status'] == 'Выполнено' ? 'selected' : '' ?>>Выполнено</option>
-                    <option value="Отклонено" <?= $o['status'] == 'Отклонено' ? 'selected' : '' ?>>Отклонено</option>
-                </select>
-                <button type="submit">Обновить</button>
-                <button type="submit" name="delete" formaction="?action=delete&id=<?= $o['id'] ?>" formmethod="post">Удалить</button>
+        <form method="post" action="?action=update&id=<?= $o['id'] ?>" style="display:inline">
+        <select name="status" class="status-select" data-id="<?= $o['id'] ?>">
+            <option value="Одобрено" <?= $o['status']=='Одобрено'?'selected':'' ?>>Одобрено</option>
+            <option value="Выполнено" <?= $o['status']=='Выполнено'?'selected':'' ?>>Выполнено</option>
+            <option value="Отклонено" <?= $o['status']==='Отклонено'?'selected':'' ?>>Отклонено</option>
+        </select>
+
+        <div id="reason-<?= $o['id'] ?>"
+            style="display: <?= $o['status']==='Отклонено' ? 'block' : 'none' ?>; margin-top:4px;">
+            <lable for="rejection_reason-<?= $o['id'] ?>">Причина отказа: <?= htmlspecialchars($o['rejection_reason'] ?? '') ?></lable><br>
+            <input id="rejection_reason-<?= $o['id'] ?>"
+                    name="rejection_reason"
+                    rows="2"
+                    style="width:100%;"></input>
+        </div>
+
+        <button type="submit">Обновить</button>
+            <button type="submit" name="delete" formaction="?action=delete&id=<?= $o['id'] ?>" formmethod="post">Удалить</button>
             </form>
         </div>
     </div>
 <?php endforeach; ?>
+<script>
+  document.querySelectorAll('.status-select').forEach(function(sel) {
+    var id = sel.dataset.id;
+    var block = document.getElementById('reason-' + id);
+    var ta    = document.getElementById('rejection_reason-' + id);
+    sel.addEventListener('change', function() {
+      if (sel.value === 'Отклонено') {
+        block.style.display = 'block';
+        ta.required = true;
+      } else {
+        block.style.display = 'none';
+        ta.required = false;
+        ta.value = '';
+      }
+    });
+  });
+</script>
 </div>
 <?php else: ?>
 <p class="fade">Нет заявок.</p>

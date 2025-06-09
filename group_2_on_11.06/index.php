@@ -25,7 +25,8 @@ $db->exec("CREATE TABLE IF NOT EXISTS orders (
     license_issue VARCHAR(255),
     car_make VARCHAR(255),
     car_model VARCHAR(255),
-    status VARCHAR(255) DEFAULT 'Новая'
+    status VARCHAR(255) DEFAULT 'Новая',
+    rejection_reason TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
 // add new columns if database already existed
@@ -35,8 +36,8 @@ foreach ($res as $row) { $cols[] = $row['Field']; }
 if (!in_array('status', $cols)) {
     $db->exec("ALTER TABLE orders ADD COLUMN status VARCHAR(255) DEFAULT 'Новая'");
 }
-if (!in_array('review', $cols)) {
-    $db->exec("ALTER TABLE orders ADD COLUMN review TEXT");
+if (!in_array('rejection_reason', $cols)) {
+    $db->exec("ALTER TABLE orders ADD COLUMN rejection_reason TEXT");
 }
 
 function render($template, $vars = []) {
@@ -111,13 +112,24 @@ case 'create':
     case 'admin':
         handle_admin($db);
         break;
-    case 'update':
-        if (!($_SESSION['admin'] ?? false)) { header('Location: ?action=admin'); exit; }
-        $id = (int)($_GET['id'] ?? 0);
-        $stmt = $db->prepare('UPDATE orders SET status = ? WHERE id = ?');
-        $stmt->execute([$_POST['status'], $id]);
+case 'update':
+    if (!($_SESSION['admin'] ?? false)) { header('Location: ?action=admin'); exit; }
+    $id = (int)($_GET['id'] ?? 0);
+    $status = $_POST['status'];
+    $reason = $_POST['rejection_reason'] ?? null;
+
+    // Валидация: если отклонено — причина обязательна
+    if ($status === 'Отклонено' && trim($reason) === '') {
+        $_SESSION['error'] = 'Необходимо указать причину отказа';
         header('Location: ?action=admin');
-        break;
+        exit;
+    }
+
+    $stmt = $db->prepare('UPDATE orders SET status = ?, rejection_reason = ? WHERE id = ?');
+    $stmt->execute([$status, $reason, $id]);
+    header('Location: ?action=admin');
+    break;
+
     case 'delete':
         if (!($_SESSION['admin'] ?? false)) { header('Location: ?action=admin'); exit; }
         $id = (int)($_GET['id'] ?? 0);
