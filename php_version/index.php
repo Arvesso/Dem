@@ -14,28 +14,34 @@ $db->exec("CREATE TABLE IF NOT EXISTS users (
     phone VARCHAR(255),
     email VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-$db->exec("CREATE TABLE IF NOT EXISTS orders (
+$db->exec("CREATE TABLE IF NOT EXISTS applications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    datetime DATETIME,
-    weight VARCHAR(255),
-    size VARCHAR(255),
-    cargo_type VARCHAR(255),
-    from_addr VARCHAR(255),
-    to_addr VARCHAR(255),
+    course VARCHAR(255),
+    start_date DATE,
+    payment VARCHAR(255),
     status VARCHAR(255) DEFAULT 'Новая',
     review TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
 // add new columns if database already existed
 $cols = [];
-$res = $db->query("SHOW COLUMNS FROM orders");
+$res = $db->query("SHOW COLUMNS FROM applications");
 foreach ($res as $row) { $cols[] = $row['Field']; }
 if (!in_array('status', $cols)) {
-    $db->exec("ALTER TABLE orders ADD COLUMN status VARCHAR(255) DEFAULT 'Новая'");
+    $db->exec("ALTER TABLE applications ADD COLUMN status VARCHAR(255) DEFAULT 'Новая'");
 }
 if (!in_array('review', $cols)) {
-    $db->exec("ALTER TABLE orders ADD COLUMN review TEXT");
+    $db->exec("ALTER TABLE applications ADD COLUMN review TEXT");
+}
+if (!in_array('course', $cols)) {
+    $db->exec("ALTER TABLE applications ADD COLUMN course VARCHAR(255)");
+}
+if (!in_array('start_date', $cols)) {
+    $db->exec("ALTER TABLE applications ADD COLUMN start_date DATE");
+}
+if (!in_array('payment', $cols)) {
+    $db->exec("ALTER TABLE applications ADD COLUMN payment VARCHAR(255)");
 }
 
 function render($template, $vars = []) {
@@ -63,29 +69,25 @@ switch ($action) {
         session_destroy();
         header('Location: ?action=login');
         break;
-    case 'orders':
+    case 'applications':
         if (!logged_in()) { header('Location: ?action=login'); exit; }
-        $stmt = $db->prepare('SELECT * FROM orders WHERE user_id = ?');
+        $stmt = $db->prepare('SELECT * FROM applications WHERE user_id = ?');
         $stmt->execute([$_SESSION['user_id']]);
-        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        render('orders', ['orders' => $orders]);
+        $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        render('applications', ['applications' => $applications]);
         break;
     case 'create':
         if (!logged_in()) { header('Location: ?action=login'); exit; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $size = $_POST['length'] . 'x' . $_POST['width'] . 'x' . $_POST['height'];
-            $stmt = $db->prepare('INSERT INTO orders (user_id, datetime, weight, size, cargo_type, from_addr, to_addr, status) VALUES (?,?,?,?,?,?,?,?)');
+            $stmt = $db->prepare('INSERT INTO applications (user_id, course, start_date, payment, status) VALUES (?,?,?,?,?)');
             $stmt->execute([
                 $_SESSION['user_id'],
-                $_POST['datetime'],
-                $_POST['weight'],
-                $size,
-                $_POST['cargo_type'],
-                $_POST['from_addr'],
-                $_POST['to_addr'],
+                $_POST['course'],
+                $_POST['start_date'],
+                $_POST['payment'],
                 'Новая'
             ]);
-            header('Location: ?action=orders');
+            header('Location: ?action=applications');
             exit;
         }
         render('create');
@@ -93,14 +95,14 @@ switch ($action) {
     case 'review':
         if (!logged_in()) { header('Location: ?action=login'); exit; }
         $id = (int)($_GET['id'] ?? 0);
-        $stmt = $db->prepare('SELECT * FROM orders WHERE id = ?');
+        $stmt = $db->prepare('SELECT * FROM applications WHERE id = ?');
         $stmt->execute([$id]);
         $order = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($order && $order['user_id'] == $_SESSION['user_id'] && $order['status'] === 'Выполнено') {
-            $stmt = $db->prepare('UPDATE orders SET review = ? WHERE id = ?');
+        if ($order && $order['user_id'] == $_SESSION['user_id'] && $order['status'] === 'Обучение завершено') {
+            $stmt = $db->prepare('UPDATE applications SET review = ? WHERE id = ?');
             $stmt->execute([$_POST['review'], $id]);
         }
-        header('Location: ?action=orders');
+        header('Location: ?action=applications');
         break;
     case 'admin':
         handle_admin($db);
@@ -108,20 +110,20 @@ switch ($action) {
     case 'update':
         if (!($_SESSION['admin'] ?? false)) { header('Location: ?action=admin'); exit; }
         $id = (int)($_GET['id'] ?? 0);
-        $stmt = $db->prepare('UPDATE orders SET status = ? WHERE id = ?');
+        $stmt = $db->prepare('UPDATE applications SET status = ? WHERE id = ?');
         $stmt->execute([$_POST['status'], $id]);
         header('Location: ?action=admin');
         break;
     case 'delete':
         if (!($_SESSION['admin'] ?? false)) { header('Location: ?action=admin'); exit; }
         $id = (int)($_GET['id'] ?? 0);
-        $stmt = $db->prepare('DELETE FROM orders WHERE id = ?');
+        $stmt = $db->prepare('DELETE FROM applications WHERE id = ?');
         $stmt->execute([$id]);
         header('Location: ?action=admin');
         break;
     default:
         if (logged_in()) {
-            header('Location: ?action=orders');
+            header('Location: ?action=applications');
         } else {
             header('Location: ?action=login');
         }
@@ -171,7 +173,7 @@ function handle_login($db) {
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        if ($username === 'admin' && $password === 'gruzovik2024') {
+        if ($username === 'admin' && $password === 'education') {
             $_SESSION['admin'] = true;
             header('Location: ?action=admin');
             exit;
@@ -183,7 +185,7 @@ function handle_login($db) {
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
-            header('Location: ?action=orders');
+            header('Location: ?action=applications');
             exit;
         } else {
             $error = 'Неверный логин или пароль';
@@ -199,12 +201,12 @@ function handle_admin($db) {
     }
     $status_filter = $_GET['status'] ?? null;
     if ($status_filter) {
-        $stmt = $db->prepare('SELECT orders.*, users.full_name FROM orders LEFT JOIN users ON orders.user_id = users.id WHERE status = ?');
+        $stmt = $db->prepare('SELECT applications.*, users.full_name FROM applications LEFT JOIN users ON applications.user_id = users.id WHERE status = ?');
         $stmt->execute([$status_filter]);
-        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } else {
-        $orders = $db->query('SELECT orders.*, users.full_name FROM orders LEFT JOIN users ON orders.user_id = users.id')->fetchAll(PDO::FETCH_ASSOC);
+        $applications = $db->query('SELECT applications.*, users.full_name FROM applications LEFT JOIN users ON applications.user_id = users.id')->fetchAll(PDO::FETCH_ASSOC);
     }
-    render('admin', ['orders' => $orders, 'status_filter' => $status_filter]);
+    render('admin', ['applications' => $applications, 'status_filter' => $status_filter]);
 }
 ?>

@@ -5,33 +5,28 @@
         <select name="status">
             <option value="" <?php if (!$status_filter) echo 'selected'; ?>>Все</option>
             <option value="Новая" <?php if ($status_filter=='Новая') echo 'selected'; ?>>Новая</option>
-            <option value="В работе" <?php if ($status_filter=='В работе') echo 'selected'; ?>>В работе</option>
-            <option value="Выполнено" <?php if ($status_filter=='Выполнено') echo 'selected'; ?>>Выполнено</option>
-            <option value="Отменена" <?php if ($status_filter=='Отменена') echo 'selected'; ?>>Отменена</option>
+            <option value="Идет обучение" <?php if ($status_filter=='Идет обучение') echo 'selected'; ?>>Идет обучение</option>
+            <option value="Обучение завершено" <?php if ($status_filter=='Обучение завершено') echo 'selected'; ?>>Обучение завершено</option>
         </select>
     </label>
     <button type="submit">Фильтр</button>
 </form>
-<?php if ($orders): ?>
+<?php if ($applications): ?>
 <div class="order-list fade">
-<?php foreach ($orders as $o): ?>
+<?php foreach ($applications as $o): ?>
 <div class="order-card">
   <div><strong>ID:</strong> <?= htmlspecialchars($o['id']) ?></div>
   <div><strong>Пользователь:</strong> <?= htmlspecialchars($o['full_name'] ?? $o['user_id']) ?></div>
-  <div><strong>Дата:</strong> <?= htmlspecialchars($o['datetime']) ?></div>
-  <div><strong>Вес:</strong> <?= htmlspecialchars($o['weight']) ?></div>
-  <div><strong>Габариты:</strong> <?= htmlspecialchars($o['size']) ?></div>
-  <div><strong>Тип:</strong> <?= htmlspecialchars($o['cargo_type']) ?></div>
-  <div><strong>Откуда:</strong> <?= htmlspecialchars($o['from_addr']) ?></div>
-  <div><strong>Куда:</strong> <?= htmlspecialchars($o['to_addr']) ?></div>
+  <div><strong>Курс:</strong> <?= htmlspecialchars($o['course']) ?></div>
+  <div><strong>Дата начала:</strong> <?= htmlspecialchars($o['start_date']) ?></div>
+  <div><strong>Оплата:</strong> <?= htmlspecialchars($o['payment']) ?></div>
   <div><strong>Статус:</strong> <?= htmlspecialchars($o['status']) ?></div>
   <div class="actions">
       <form method="post" action="?action=update&id=<?= $o['id'] ?>" style="display:inline">
           <select name="status">
               <option value="Новая" <?= $o['status']=='Новая'?'selected':'' ?>>Новая</option>
-              <option value="В работе" <?= $o['status']=='В работе'?'selected':'' ?>>В работе</option>
-              <option value="Выполнено" <?= $o['status']=='Выполнено'?'selected':'' ?>>Выполнено</option>
-              <option value="Отменена" <?= $o['status']=='Отменена'?'selected':'' ?>>Отменена</option>
+              <option value="Идет обучение" <?= $o['status']=='Идет обучение'?'selected':'' ?>>Идет обучение</option>
+              <option value="Обучение завершено" <?= $o['status']=='Обучение завершено'?'selected':'' ?>>Обучение завершено</option>
           </select>
           <button type="submit">Обновить</button>
           <button type="submit" name="delete" formaction="?action=delete&id=<?= $o['id'] ?>" formmethod="post">Удалить</button>
