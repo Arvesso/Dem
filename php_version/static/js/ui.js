@@ -10,10 +10,10 @@ window.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade').forEach(el => observer.observe(el));
 
-  const orders = document.getElementById('orders-dynamic');
+  const orders = document.getElementById('applications-dynamic');
   if (orders) {
     orders.innerHTML = '<p>Загрузка...</p>';
-    fetch('orders_ajax.php')
+    fetch('applications_ajax.php')
       .then(r => r.text())
       .then(html => {
         orders.innerHTML = html;

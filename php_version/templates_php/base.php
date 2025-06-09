@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Грузовозофф</title>
+    <title>Корочки.есть</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     <div class="links">
         <?php if (isset($_SESSION['user_id']) || ($_SESSION['admin'] ?? false)): ?>
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="?action=orders">Мои заявки</a>
+                <a href="?action=applications">Мои заявки</a>
                 <a href="?action=create">Новая заявка</a>
             <?php endif; ?>
             <a href="?action=logout">Выход</a>

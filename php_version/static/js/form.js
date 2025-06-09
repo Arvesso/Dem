@@ -28,14 +28,6 @@ window.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  const cargoSelect = document.getElementById('cargo_type');
-  if (cargoSelect) {
-    cargoSelect.addEventListener('change', function() {
-      if (cargoSelect.value === 'Мусор') {
-        alert('Стоимость заказа увеличится из-за необходимости утилизации.');
-      }
-    });
-  }
 
   const toggle = document.getElementById('theme-toggle');
   if (toggle) {
