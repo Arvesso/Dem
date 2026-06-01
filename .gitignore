@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+
+# Local env / secrets
+.env
+.env.local
+*.local
+
+# Stray logs (cross-tree). Portal already ignores its own `*.log` files;
+# this catches anything emitted into cms/, server/, or the repo root
+# by a one-off script or local debug session.
+*.log
+
+# Per-app .gitignore files cover their own build outputs
