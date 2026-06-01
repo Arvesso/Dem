@@ -8,7 +8,7 @@
  */
 
 return [
-    'host'     => 'localhost',
+    'host'     => '127.0.1.28',
     'dbname'   => 'konferencii',   // <-- ПОМЕНЯЙТЕ на имя вашей БД
     'user'     => 'root',
     'password' => '',
